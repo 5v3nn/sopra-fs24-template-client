@@ -8,7 +8,7 @@
    feel free to play around with these and see what other look you can come up with! :D
 */
 
-$accent: #97ABFF;
+$accent: #97abff;
 $accentDark: #123597;
 $textColor: white;
 $background: #262632;
@@ -36,7 +36,7 @@ $borderRadius: 0.75em;
   for an example, see styles/views/Login.scss
 */
 @mixin center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
