@@ -13,6 +13,8 @@ const Login = () => {
   const [name, setName] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
 
+  const { showName, setShowName } = useContext(NameContext);
+
   const doLogin = async () => {
     try {
       const requestBody = JSON.stringify({ username, name });
@@ -23,6 +25,9 @@ const Login = () => {
 
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
+
+      // store name set
+      setShowName(name);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/game");

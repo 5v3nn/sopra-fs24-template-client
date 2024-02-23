@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, createContext } from "react";
 import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
+
+export const NameContext = createContext();
 
 /**
  * Happy coding!
@@ -9,10 +11,14 @@ import AppRouter from "./components/routing/routers/AppRouter";
  * Updated by Marco Leder
  */
 const App = () => {
+  const [showName, setShowName] = useState();
+
   return (
     <div>
       <Header height="100" />
-      <AppRouter />
+      <NameContext.Provider value={{ showName, setShowName }}>
+        <AppRouter />
+      </NameContext.Provider>
     </div>
   );
 };

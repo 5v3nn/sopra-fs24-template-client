@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
@@ -7,6 +7,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
+import { NameContext } from "../../App";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -31,8 +32,11 @@ const Game = () => {
   // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
   const [users, setUsers] = useState<User[]>(null);
 
+  const { showName, setShowName } = useContext(NameContext);
+
   const logout = (): void => {
     localStorage.removeItem("token");
+    setShowName("");
     navigate("/login");
   };
 
@@ -84,6 +88,7 @@ const Game = () => {
   if (users) {
     content = (
       <div className="game">
+        <h2>Hello, {showName}</h2>
         <ul className="game user-list">
           {users.map((user: User) => (
             <li key={user.id}>
