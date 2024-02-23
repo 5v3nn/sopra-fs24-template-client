@@ -7,6 +7,7 @@ import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import FormField from "../ui/FormField";
 import { NameContext } from "../../App";
+import RenderError from "../ui/RenderError";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Login = () => {
   const [username, setUsername] = useState<string>(null);
 
   const { showName, setShowName } = useContext(NameContext);
+
+  const [loginError, setLoginError] = useState<boolean>(false);
 
   const doLogin = async () => {
     try {
@@ -31,6 +34,7 @@ const Login = () => {
       if (!found) {
         throw new Error("user not found");
       }
+      setLoginError(false);
 
       // Get the returned user and update a new object. todo
       const user = new User(response.data);
@@ -45,7 +49,8 @@ const Login = () => {
       // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/game");
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      // alert(`Something went wrong during the login: \n${handleError(error)}`);
+      setLoginError(true);
     }
   };
 
@@ -71,6 +76,12 @@ const Login = () => {
           {/*  onChange={(p) => setPassword(p)}*/}
           {/*  inputType="password"*/}
           {/*/>*/}
+          <div className="login">
+            <RenderError
+              err={loginError}
+              text="Error: User or password wrong."
+            />
+          </div>
           <div className="login button-container">
             <Button
               // disabled={!username || !password}
