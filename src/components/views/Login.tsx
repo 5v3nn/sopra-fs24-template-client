@@ -68,6 +68,12 @@ const Login = () => {
               Login
             </Button>
           </div>
+
+          <div className="login button-container">
+            <Button width="100%" onClick={() => navigate("/register")}>
+              Register
+            </Button>
+          </div>
         </div>
       </div>
     </BaseContainer>
