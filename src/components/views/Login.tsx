@@ -17,14 +17,27 @@ const Login = () => {
 
   const doLogin = async () => {
     try {
-      const requestBody = JSON.stringify({ username, name });
-      const response = await api.post("/users", requestBody);
+      // const requestBody = JSON.stringify({ username, password });
+      // const requestBody = JSON.stringify({ username, name });
+      // const response = await api.post("/users", requestBody);
+      const response = await api.get("/users");
 
-      // Get the returned user and update a new object.
+      // todo how to only get user by username? -> cannot add endpoint for that
+      console.log("response: ", response);
+      const found =
+        response.data.filter((x) => x.username === username).length !== 0;
+      console.log("found", found);
+
+      if (!found) {
+        throw new Error("user not found");
+      }
+
+      // Get the returned user and update a new object. todo
       const user = new User(response.data);
 
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
+      // localStorage.setItem("token", null);
 
       // store name set
       setShowName(name);
