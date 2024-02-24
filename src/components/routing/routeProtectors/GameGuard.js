@@ -1,6 +1,8 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Navigate, Outlet } from "react-router-dom";
 import PropTypes from "prop-types";
+import { api, handleError } from "helpers/api";
+import { useAuth } from "../../useAuth";
 
 /**
  * routeProtectors interfaces can tell the router whether or not it should allow navigation to a requested route.
@@ -12,11 +14,14 @@ import PropTypes from "prop-types";
  * @param props
  */
 export const GameGuard = () => {
-  if (localStorage.getItem("token")) {
-    return <Outlet />;
+  const isAuth = useAuth();
+
+  if (isAuth === null) {
+    // waiting..
+    return null;
   }
 
-  return <Navigate to="/login" replace />;
+  return isAuth ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 GameGuard.propTypes = {

@@ -48,6 +48,11 @@ const Game = () => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
+        console.log(
+          "request to /users with token'",
+          localStorage.getItem("token"),
+          "'"
+        );
         const response = await api.get("/users");
 
         // delays continuous execution of an async operation for 1 second.

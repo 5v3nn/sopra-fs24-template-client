@@ -23,30 +23,50 @@ const Login = () => {
       // const requestBody = JSON.stringify({ username, password });
       // const requestBody = JSON.stringify({ username, name });
       // const response = await api.post("/users", requestBody);
-      const response = await api.get("/users");
 
-      // todo how to only get user by username? -> cannot add endpoint for that
-      console.log("response: ", response);
-      const found =
-        response.data.filter((x) => x.username === username).length !== 0;
-      console.log("found", found);
+      // todo password
+      console.log(
+        "make request to auth with username",
+        username,
+        "password",
+        name
+      );
 
-      if (!found) {
-        throw new Error("user not found");
-      }
+      // todo password
+      const authResp = await api.post("/users/auth", { username, name });
+      console.debug("auth respond with username password: ", authResp);
+      localStorage.setItem("token", authResp.data.token);
+
+      // if (!isAuth) {
+      //   throw new Error("not valid user");
+      // }
+
+      // const response = await api.get("/users");
+      //
+      // // todo how to only get user by username? -> cannot add endpoint for that
+      // console.log("response: ", response);
+      //
+      // // todo get logged in user
+      // const found = response.data.filter((x) => x.username === username);
+      // console.log("found", found);
+      //
+      // if (found.length === 0) {
+      //   throw new Error("user not found");
+      // }
       setLoginError(false);
 
       // Get the returned user and update a new object. todo
-      const user = new User(response.data);
+      // const user = new User(found[0]);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
+      // localStorage.setItem("token", user.token);
       // localStorage.setItem("token", null);
 
       // store name set
-      setShowName(name);
+      setShowName(username);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
+
       navigate("/game");
     } catch (error) {
       // alert(`Something went wrong during the login: \n${handleError(error)}`);

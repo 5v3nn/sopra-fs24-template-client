@@ -19,15 +19,23 @@ const Registration = () => {
   const doRegister = async () => {
     try {
       const requestBody = JSON.stringify({ username, name, password });
-      const response = api.post("/users", requestBody);
       console.log("post request to /users with payload: ", requestBody);
 
-      // set show name to greet registered user
-      setShowName(name);
+      const response = await api.post("/users", requestBody);
 
       // set login token
       const user = new User(response.data);
       localStorage.setItem("token", user.token);
+
+      console.log(
+        "response from /users: ",
+        response,
+        "to get user token",
+        response.data
+      );
+
+      // set show name to greet registered user
+      setShowName(name);
 
       // redirect to overview page (automatically logged in)
       navigate("/game");
