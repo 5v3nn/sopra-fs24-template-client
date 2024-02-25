@@ -1,8 +1,8 @@
 @import "../theme";
 
-.primary-button {
+.icon-button {
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
   &:disabled {
     cursor: default;
@@ -21,7 +21,10 @@
   border-radius: $borderRadius;
   cursor: pointer;
   opacity: 1;
-  color: $background;
-  background-color: $accent;
+  background: none;
   transition: all 0.3s ease;
+}
+
+.icon-button-icon {
+  color: $accent;
 }

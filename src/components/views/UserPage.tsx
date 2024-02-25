@@ -1,3 +1,4 @@
+/*
 import React, { useContext, useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
@@ -8,32 +9,14 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import { NameContext } from "../../App";
-import { FaRegEye, FaEye } from "react-icons/fa6";
-import IconButton from "../ui/IconButton";
 
-const Player = ({ user }: { user: User }) => {
-  const [hover, setHover] = useState(false);
-  const navigate = useNavigate();
-  const url = "/game/" + user.id;
-
-  const handleClick = () => {
-    console.log("navigate to " + url);
-    navigate(url);
-  };
-
-  return (
-    <div className="player container">
-      <div className="player username">{user.username}</div>
-      <div className="player name">{user.name}</div>
-      <div className="player id">id: {user.id}</div>
-      <IconButton
-        hoverIcon={FaEye}
-        icon={FaRegEye}
-        onClick={handleClick}
-      ></IconButton>
-    </div>
-  );
-};
+const Player = ({ user }: { user: User }) => (
+  <div className="player container">
+    <div className="player username">{user.username}</div>
+    <div className="player name">{user.name}</div>
+    <div className="player id">id: {user.id}</div>
+  </div>
+);
 
 Player.propTypes = {
   user: PropTypes.object,
@@ -71,14 +54,7 @@ const Game = () => {
           localStorage.getItem("token"),
           "'"
         );
-
-        const response = await api.get("/users", {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            Authorization: localStorage.getItem("token"),
-          },
-        });
+        const response = await api.get("/users");
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
@@ -143,3 +119,87 @@ const Game = () => {
 };
 
 export default Game;
+*/
+
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { api, handleError } from "helpers/api";
+import { Spinner } from "components/ui/Spinner";
+import BaseContainer from "components/ui/BaseContainer";
+import { User } from "types";
+import { MdOutlineModeEdit, MdModeEdit } from "react-icons/md";
+import IconButton from "../ui/IconButton";
+import PropTypes from "prop-types";
+import { Button } from "../ui/Button";
+
+const UserField = (props) => {
+  return (
+    <div className="player container">
+      <div className="player">{props.children}</div>
+      <IconButton
+        className="player id"
+        hoverIcon={MdModeEdit}
+        icon={MdOutlineModeEdit}
+      ></IconButton>
+    </div>
+  );
+};
+
+UserField.propTypes = {
+  children: PropTypes.node,
+};
+
+const UserPage = () => {
+  const { id } = useParams();
+  const [user, setUser] = useState<User>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const url = `/users/${id}`;
+        console.log("try to fetch:" + url);
+        const response = await api.get(url);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setUser(response.data);
+      } catch (error) {
+        console.error(
+          `Something went wrong while fetching the user: \n${handleError(error)}`
+        );
+        alert(
+          "Something went wrong while fetching the user! See the console for details."
+        );
+      }
+    }
+
+    fetchData();
+  }, [id]);
+
+  let content = <Spinner />;
+
+  console.log("render user...");
+
+  if (user) {
+    content = (
+      <div className="game">
+        <UserField>User ID: {user.id}</UserField>
+        <UserField>Username: {user.username}</UserField>
+        <UserField>Name: {user.name}</UserField>
+        {/*<UserField>Birthday: {user.birthday}</UserField>*/}
+        {/*<UserField>Creation Date: {user.creationDate}</UserField>*/}
+      </div>
+    );
+  }
+
+  return (
+    <BaseContainer className="game container">
+      <h2>User Details</h2>
+      {content}
+      <Button width="100%" onClick={() => navigate("/game")}>
+        Back
+      </Button>
+    </BaseContainer>
+  );
+};
+
+export default UserPage;

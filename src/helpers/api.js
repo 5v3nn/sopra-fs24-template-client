@@ -3,10 +3,14 @@ import { getDomain } from "./getDomain";
 
 export const api = axios.create({
   baseURL: getDomain(),
-  headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+  headers: {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    Authorization: localStorage.getItem("token"),
+  },
 });
 
-export const handleError = error => {
+export const handleError = (error) => {
   const response = error.response;
 
   // catch 4xx and 5xx status codes
@@ -22,8 +26,11 @@ export const handleError = error => {
       info += `\nerror message:\n${response.data}`;
     }
 
-    console.log("The request was made and answered but was unsuccessful.", error.response);
-    
+    console.log(
+      "The request was made and answered but was unsuccessful.",
+      error.response
+    );
+
     return info;
   } else {
     if (error.message.match(/Network Error/)) {
@@ -31,7 +38,7 @@ export const handleError = error => {
     }
 
     console.log("Something else happened.", error);
-    
+
     return error.message;
   }
 };
