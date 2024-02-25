@@ -8,14 +8,21 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import { NameContext } from "../../App";
+import { FaRegEye, FaEye } from "react-icons/fa6";
+import IconButton from "../ui/IconButton";
 
-const Player = ({ user }: { user: User }) => (
-  <div className="player container">
-    <div className="player username">{user.username}</div>
-    <div className="player name">{user.name}</div>
-    <div className="player id">id: {user.id}</div>
-  </div>
-);
+const Player = ({ user }: { user: User }) => {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <div className="player container">
+      <div className="player username">{user.username}</div>
+      <div className="player name">{user.name}</div>
+      <div className="player id">id: {user.id}</div>
+      <IconButton hoverIcon={FaEye} icon={FaRegEye}></IconButton>
+    </div>
+  );
+};
 
 Player.propTypes = {
   user: PropTypes.object,
