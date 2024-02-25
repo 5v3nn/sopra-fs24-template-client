@@ -133,20 +133,28 @@ import PropTypes from "prop-types";
 import { Button } from "../ui/Button";
 
 const UserField = (props) => {
-  return (
-    <div className="player container">
-      <div className="player">{props.children}</div>
+  let button = <div></div>;
+  if (props.editable) {
+    button = (
       <IconButton
         className="player id"
         hoverIcon={MdModeEdit}
         icon={MdOutlineModeEdit}
       ></IconButton>
+    );
+  }
+
+  return (
+    <div className="player container">
+      <div className="player">{props.children}</div>
+      {button}
     </div>
   );
 };
 
 UserField.propTypes = {
   children: PropTypes.node,
+  editable: PropTypes.boolean,
 };
 
 const UserPage = () => {
@@ -188,9 +196,9 @@ const UserPage = () => {
   if (user) {
     content = (
       <div className="game">
-        <UserField>User ID: {user.id}</UserField>
-        <UserField>Username: {user.username}</UserField>
-        <UserField>Name: {user.name}</UserField>
+        <UserField editable={false}>User ID: {user.id}</UserField>
+        <UserField editable={true}>Username: {user.username}</UserField>
+        <UserField editable={true}>Name: {user.name}</UserField>
         {/*<UserField>Birthday: {user.birthday}</UserField>*/}
         {/*<UserField>Creation Date: {user.creationDate}</UserField>*/}
       </div>
