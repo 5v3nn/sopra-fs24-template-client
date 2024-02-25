@@ -11,66 +11,43 @@ import RenderError from "../ui/RenderError";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>(null);
+  const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
 
   const { showName, setShowName } = useContext(NameContext);
 
-  const [loginError, setLoginError] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<string>("");
 
   const doLogin = async () => {
     try {
-      // const requestBody = JSON.stringify({ username, password });
-      // const requestBody = JSON.stringify({ username, name });
-      // const response = await api.post("/users", requestBody);
-
-      // todo password
       console.log(
         "make request to auth with username",
         username,
         "password",
-        name
+        password
       );
 
-      // todo password
-      const authResp = await api.post("/users/auth", { username, name });
+      const authResp = await api.post(
+        "/users/auth",
+        JSON.stringify({ username, password })
+      );
       console.debug("auth respond with username password: ", authResp);
       localStorage.setItem("token", authResp.data.token);
 
-      // if (!isAuth) {
-      //   throw new Error("not valid user");
-      // }
-
-      // const response = await api.get("/users");
-      //
-      // // todo how to only get user by username? -> cannot add endpoint for that
-      // console.log("response: ", response);
-      //
-      // // todo get logged in user
-      // const found = response.data.filter((x) => x.username === username);
-      // console.log("found", found);
-      //
-      // if (found.length === 0) {
-      //   throw new Error("user not found");
-      // }
-      setLoginError(false);
-
-      // Get the returned user and update a new object. todo
-      // const user = new User(found[0]);
-
-      // Store the token into the local storage.
-      // localStorage.setItem("token", user.token);
-      // localStorage.setItem("token", null);
+      setLoginError("");
 
       // store name set
       setShowName(username);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
-
+      console.log("login successful, route to /game");
       navigate("/game");
     } catch (error) {
-      // alert(`Something went wrong during the login: \n${handleError(error)}`);
-      setLoginError(true);
+      console.log(
+        `Something went wrong during the login: \n${handleError(error)}`
+      );
+      // console.log(error);
+      setLoginError("Error: " + error.response.data.message);
     }
   };
 
@@ -84,28 +61,25 @@ const Login = () => {
             onChange={(un: string) => setUsername(un)}
             inputType="text"
           />
-          <FormField
-            label="Name"
-            value={name}
-            onChange={(un: string) => setName(un)}
-            inputType="text"
-          />
           {/*<FormField*/}
-          {/*  label="Password"*/}
-          {/*  value={password}*/}
-          {/*  onChange={(p) => setPassword(p)}*/}
-          {/*  inputType="password"*/}
+          {/*  label="Name"*/}
+          {/*  value={name}*/}
+          {/*  onChange={(un: string) => setName(un)}*/}
+          {/*  inputType="text"*/}
           {/*/>*/}
+          <FormField
+            label="Password"
+            value={password}
+            onChange={(p) => setPassword(p)}
+            inputType="password"
+          />
           <div className="login">
-            <RenderError
-              err={loginError}
-              text="Error: User or password wrong."
-            />
+            <RenderError err={loginError !== ""} text={loginError} />
           </div>
           <div className="login button-container">
             <Button
-              // disabled={!username || !password}
-              disabled={!username || !name}
+              disabled={!username || !password}
+              // disabled={!username || !name}
               width="100%"
               onClick={() => doLogin()}
             >
