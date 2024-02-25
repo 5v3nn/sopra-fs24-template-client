@@ -159,7 +159,13 @@ const UserPage = () => {
       try {
         const url = `/users/${id}`;
         console.log("try to fetch:" + url);
-        const response = await api.get(url);
+        const response = await api.get(url, {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: localStorage.getItem("token"),
+          },
+        });
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setUser(response.data);
       } catch (error) {
