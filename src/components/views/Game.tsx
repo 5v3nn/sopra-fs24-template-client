@@ -53,7 +53,14 @@ const Game = () => {
           localStorage.getItem("token"),
           "'"
         );
-        const response = await api.get("/users");
+
+        const response = await api.get("/users", {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: localStorage.getItem("token"),
+          },
+        });
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
