@@ -7,7 +7,7 @@ import { isProduction } from "./isProduction";
  * @returns {string}
  */
 export const getDomain = () => {
-  const prodUrl = "https://sopra-fs24-greuter-sven-client.oa.r.appspot.com/"; // insert your prod url for server (once deployed)
+  const prodUrl = "https://sopra-fs24-greuter-sven-server.oa.r.appspot.com/"; // insert your prod url for server (once deployed)
   const devUrl = "http://localhost:8080";
 
   return isProduction() ? prodUrl : devUrl;
