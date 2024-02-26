@@ -7,6 +7,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "../ui/Button";
 import "styles/views/Login.scss";
 import { NameContext } from "../../App";
+import RenderError from "../ui/RenderError";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const Registration = () => {
   const [username, setUsername] = useState<string>(null);
 
   const { showName, setShowName } = useContext(NameContext);
+
+  const [loginError, setLoginError] = useState<string>("");
 
   const doRegister = async () => {
     try {
@@ -37,12 +40,22 @@ const Registration = () => {
       // set show name to greet registered user
       setShowName(name);
 
+      // no error
+      setLoginError("");
+
       // redirect to overview page (automatically logged in)
       navigate("/game");
     } catch (error) {
-      alert(
-        `Something went wrong during the registration: \n${handleError(error)}`
+      const err = handleError(error);
+      console.log(
+        `Something went wrong during the login: \n${err}\nerror:${error.response}`
       );
+      // console.log(error);
+      if (err.response.status === 403) {
+        setLoginError("Error: Username or password are wrong.");
+      } else {
+        setLoginError("Unexpected error: " + err);
+      }
     }
   };
 
@@ -68,6 +81,9 @@ const Registration = () => {
             onChange={(p) => setPassword(p)}
             inputType="password"
           />
+          <div className="login">
+            <RenderError err={loginError !== ""} text={loginError} />
+          </div>
           <div className="login button-container">
             <Button
               disabled={!username || !name || !password}
