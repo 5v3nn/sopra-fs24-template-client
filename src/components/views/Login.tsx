@@ -43,11 +43,16 @@ const Login = () => {
       console.log("login successful, route to /game");
       navigate("/game");
     } catch (error) {
+      const err = handleError(error);
       console.log(
-        `Something went wrong during the login: \n${handleError(error)}`
+        `Something went wrong during the login: \n${err}\nerror: ${error.response}`
       );
       // console.log(error);
-      setLoginError("Error: " + error.response.data.message);
+      if (error.response.status === 403) {
+        setLoginError("Error: Username or password are wrong.");
+      } else {
+        setLoginError("Unexpected error: " + err);
+      }
     }
   };
 
