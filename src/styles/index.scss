@@ -21,6 +21,17 @@ button {
   line-height: inherit;
   font-size: inherit;
   outline: none;
+  color: white;
+  background: $background;
+  border: 0;
+}
+
+input:disabled {
+  background: lighten($background, 5);
+}
+
+input:enabled {
+  background: $background;
 }
 
 *:focus {

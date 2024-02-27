@@ -1,166 +1,113 @@
-/*
-import React, { useContext, useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
-import { Spinner } from "components/ui/Spinner";
-import { Button } from "components/ui/Button";
-import { useNavigate } from "react-router-dom";
-import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
-import "styles/views/Game.scss";
-import { User } from "types";
-import { NameContext } from "../../App";
-
-const Player = ({ user }: { user: User }) => (
-  <div className="player container">
-    <div className="player username">{user.username}</div>
-    <div className="player name">{user.name}</div>
-    <div className="player id">id: {user.id}</div>
-  </div>
-);
-
-Player.propTypes = {
-  user: PropTypes.object,
-};
-
-const Game = () => {
-  // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
-  const navigate = useNavigate();
-
-  // define a state variable (using the state hook).
-  // if this variable changes, the component will re-render, but the variable will
-  // keep its value throughout render cycles.
-  // a component can have as many state variables as you like.
-  // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
-  const [users, setUsers] = useState<User[]>(null);
-
-  const { showName, setShowName } = useContext(NameContext);
-
-  const logout = (): void => {
-    localStorage.removeItem("token");
-    setShowName("");
-    navigate("/login");
-  };
-
-  // the effect hook can be used to react to change in your component.
-  // in this case, the effect hook is only run once, the first time the component is mounted
-  // this can be achieved by leaving the second argument an empty array.
-  // for more information on the effect hook, please see https://react.dev/reference/react/useEffect
-  useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
-    async function fetchData() {
-      try {
-        console.log(
-          "request to /users with token'",
-          localStorage.getItem("token"),
-          "'"
-        );
-        const response = await api.get("/users");
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Get the returned users and update the state.
-        setUsers(response.data);
-
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-        console.log("request to:", response.request.responseURL);
-        console.log("status code:", response.status);
-        console.log("status text:", response.statusText);
-        console.log("requested data:", response.data);
-
-        // See here to get more data.
-        console.log(response);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  let content = <Spinner />;
-
-  if (users) {
-    content = (
-      <div className="game">
-        <h2>Hello, {showName}</h2>
-        <ul className="game user-list">
-          {users.map((user: User) => (
-            <li key={user.id}>
-              <Player user={user} />
-            </li>
-          ))}
-        </ul>
-        <Button width="100%" onClick={() => logout()}>
-          Logout
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
-      <p className="game paragraph">Get all users from secure endpoint:</p>
-      {content}
-    </BaseContainer>
-  );
-};
-
-export default Game;
-*/
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import BaseContainer from "components/ui/BaseContainer";
-import { User } from "types";
-import { MdOutlineModeEdit, MdModeEdit } from "react-icons/md";
+import { api, handleError } from "../../helpers/api";
+import {
+  MdOutlineModeEdit,
+  MdModeEdit,
+  MdSave,
+  MdOutlineSave,
+  MdCancel,
+  MdOutlineCancel,
+} from "react-icons/md";
 import IconButton from "../ui/IconButton";
-import PropTypes from "prop-types";
-import { Button } from "../ui/Button";
-
-const UserField = (props) => {
-  let button = <div></div>;
-  if (props.editable) {
-    button = (
-      <IconButton
-        className="player id"
-        hoverIcon={MdModeEdit}
-        icon={MdOutlineModeEdit}
-      ></IconButton>
-    );
-  }
-
-  return (
-    <div className="player container">
-      <div className="player">{props.children}</div>
-      {button}
-    </div>
-  );
-};
-
-UserField.propTypes = {
-  children: PropTypes.node,
-  editable: PropTypes.boolean,
-};
+import UserPageField from "../ui/UserPageField";
+import {
+  IoChevronBackCircle,
+  IoChevronBackCircleOutline,
+} from "react-icons/io5";
 
 const UserPage = () => {
   const { id } = useParams();
-  const [user, setUser] = useState<User>(null);
+  const [user, setUser] = useState(null);
+  // const { user, loading, error } = useFetchUser(id);
+  // const [userEdit, setUserEdit] = useState<User>();
+
+  const [userEdit, setUserEdit] = useState({
+    // only edit vars
+    username: "",
+    name: "",
+    birthday: "",
+  });
+  const [toggled, setToggled] = useState(false);
+
+  const [isUserFetched, setIsUserFetched] = useState(false);
+
   const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    setUserEdit({
+      ...userEdit,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  useEffect(() => {
+    if (user) {
+      console.log("update user edit");
+      setUserEdit({
+        username: user.username,
+        name: user.name,
+        birthday: user.birthday,
+      });
+    }
+  }, [user]);
+
+  const handleSave = () => {
+    // Create a new user object with the updated fields
+    const updatedUser = {
+      ...user,
+      ...userEdit,
+    };
+
+    async function updateUser() {
+      try {
+        const url = `/users/${id}`;
+        console.log("Try to update user at", url);
+
+        const requestBody = JSON.stringify(updatedUser);
+
+        const response = await api.put(url, requestBody, {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: localStorage.getItem("token"),
+          },
+        });
+
+        setUser(updatedUser);
+        // todo no error
+        setToggled(!toggled);
+      } catch (error) {
+        const err = handleError(error);
+        console.log(
+          `Something went wrong during the login: \n${err}\nerror:${error.response}`
+        );
+        // console.log(error);
+        if (error.response.status === 403) {
+          alert("Error: Not authorized to edit this user.");
+        } else if (error.response.status === 404) {
+          alert("Error: Could not find the user with this id.");
+        } else if (error.response.status === 400) {
+          alert("Error: Username already used, please choose a different one.");
+        } else {
+          alert("Unexpected error: " + err);
+        }
+      }
+    }
+
+    updateUser();
+
+    // Send a PUT request to the server with the updated user data
+    // alert("api put");
+    // console.log("api call with user: ", updatedUser);
+  };
+
+  const handleCancel = () => {
+    setToggled(!toggled);
+    setUserEdit(user);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -176,6 +123,14 @@ const UserPage = () => {
         });
         await new Promise((resolve) => setTimeout(resolve, 1000));
         setUser(response.data);
+        setIsUserFetched(true);
+        setUserEdit({
+          username: response.data.username,
+          name: response.data.name,
+          birthday: response.data.birthday,
+        });
+
+        console.log("user", user);
       } catch (error) {
         console.error(
           `Something went wrong while fetching the user: \n${handleError(error)}`
@@ -189,18 +144,100 @@ const UserPage = () => {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+    if (isUserFetched) {
+      setUserEdit(user);
+    }
+  }, [isUserFetched, user]);
+
   let content = <Spinner />;
 
-  console.log("render user...");
+  // ----- for edit ------
+  let editMode = <div></div>;
+  if (toggled) {
+    editMode = (
+      <>
+        <IconButton
+          hoverIcon={MdCancel}
+          icon={MdOutlineCancel}
+          onClick={handleCancel}
+          style={{ scale: "1.5", marginRight: "10px" }}
+        />
+        <IconButton
+          hoverIcon={MdSave}
+          icon={MdOutlineSave}
+          onClick={handleSave}
+          style={{ scale: "1.5", marginLeft: "10px" }}
+        />
+      </>
+    );
+  }
 
   if (user) {
+    // set extra editable variables
+
+    console.log("render user/" + id, user.id, user, userEdit);
     content = (
       <div className="game">
-        <UserField editable={false}>User ID: {user.id}</UserField>
-        <UserField editable={true}>Username: {user.username}</UserField>
-        <UserField editable={true}>Name: {user.name}</UserField>
-        {/*<UserField>Birthday: {user.birthday}</UserField>*/}
-        {/*<UserField>Creation Date: {user.creationDate}</UserField>*/}
+        <div style={{ display: "flex" }}>
+          <IconButton
+            style={{ scale: "1.5" }}
+            className="player"
+            hoverIcon={IoChevronBackCircle}
+            icon={IoChevronBackCircleOutline}
+            disabled={toggled}
+            onClick={() => navigate("/game")}
+          />
+          <IconButton
+            style={{ marginLeft: "auto", scale: "1.5" }}
+            className="player id"
+            hoverIcon={MdModeEdit}
+            icon={MdOutlineModeEdit}
+            disabled={toggled}
+            onClick={() => {
+              setToggled(!toggled);
+            }}
+          ></IconButton>
+        </div>
+        <UserPageField
+          editable={false}
+          name="User ID: "
+          value={user.id.toString()}
+          toggled={toggled}
+        />
+        <UserPageField
+          editable={true}
+          inputType="text"
+          name="Username: "
+          userProperty={userEdit.username}
+          setUserProperty={handleInputChange}
+          userPropertyName="username"
+          toggled={toggled}
+        />
+        <UserPageField
+          editable={true}
+          inputType="text"
+          name="Name: "
+          userProperty={userEdit.name}
+          setUserProperty={handleInputChange}
+          userPropertyName="name"
+          toggled={toggled}
+        />
+        <UserPageField
+          editable={true}
+          inputType="date"
+          name="Birthday: "
+          userProperty={userEdit.birthday}
+          setUserProperty={handleInputChange}
+          userPropertyName="birthday"
+          toggled={toggled}
+        />
+        <UserPageField
+          editable={false}
+          name="Created: "
+          userProperty={user.created}
+          toggled={toggled}
+        />
       </div>
     );
   }
@@ -209,9 +246,10 @@ const UserPage = () => {
     <BaseContainer className="game container">
       <h2>User Details</h2>
       {content}
-      <Button width="100%" onClick={() => navigate("/game")}>
-        Back
-      </Button>
+      <div>{editMode}</div>
+      {/*<Button width="100%" onClick={() => navigate("/game")}>*/}
+      {/*  Back*/}
+      {/*</Button>*/}
     </BaseContainer>
   );
 };
