@@ -76,7 +76,7 @@ const UserPage = () => {
         });
 
         setUser(updatedUser);
-        // todo no error
+        setEditError("");
         setToggled(!toggled);
       } catch (error) {
         const err = handleError(error);
@@ -95,7 +95,7 @@ const UserPage = () => {
           setEditError(errMsg);
         } else if (error.response.status === 400) {
           errMsg =
-            "Error: Username already used, please choose a different one.";
+            "Error: Username not allowed or already used, please choose a different one.";
           console.log(errMsg);
           setEditError(errMsg);
         } else {
