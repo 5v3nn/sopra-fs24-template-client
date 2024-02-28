@@ -180,6 +180,7 @@ const UserPage = () => {
     content = (
       <div className="game">
         <div style={{ display: "flex" }}>
+          {/*  Back Button  */}
           <IconButton
             style={{ scale: "1.5" }}
             className="player"
@@ -188,12 +189,13 @@ const UserPage = () => {
             disabled={toggled}
             onClick={() => navigate("/game")}
           />
+          {/*  Edit Button  */}
           <IconButton
             style={{ marginLeft: "auto", scale: "1.5" }}
             className="player id"
             hoverIcon={MdModeEdit}
             icon={MdOutlineModeEdit}
-            disabled={toggled}
+            disabled={toggled || localStorage.getItem("myId") !== id}
             onClick={() => {
               setToggled(!toggled);
             }}
