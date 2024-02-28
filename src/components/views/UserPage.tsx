@@ -215,7 +215,7 @@ const UserPage = () => {
         <UserPageField
           editable={false}
           name="User ID: "
-          value={user.id.toString()}
+          userProperty={user.id.toString()}
           toggled={toggled}
         />
         <UserPageField
