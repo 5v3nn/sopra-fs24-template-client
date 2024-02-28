@@ -17,13 +17,11 @@ import {
   IoChevronBackCircle,
   IoChevronBackCircleOutline,
 } from "react-icons/io5";
+import RenderError from "../ui/RenderError";
 
 const UserPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
-  // const { user, loading, error } = useFetchUser(id);
-  // const [userEdit, setUserEdit] = useState<User>();
-
   const [userEdit, setUserEdit] = useState({
     // only edit vars
     username: "",
@@ -31,6 +29,7 @@ const UserPage = () => {
     birthday: "",
   });
   const [toggled, setToggled] = useState(false);
+  const [editError, setEditError] = useState<string>("");
 
   const [isUserFetched, setIsUserFetched] = useState(false);
 
@@ -84,15 +83,24 @@ const UserPage = () => {
         console.log(
           `Something went wrong during the login: \n${err}\nerror:${error.response}`
         );
+        let errMsg = "Unexpected error: " + err;
         // console.log(error);
         if (error.response.status === 403) {
-          alert("Error: Not authorized to edit this user.");
+          errMsg = "Error: Not authorized to edit this user.";
+          console.log(errMsg);
+          setEditError(errMsg);
         } else if (error.response.status === 404) {
-          alert("Error: Could not find the user with this id.");
+          errMsg = "Error: Could not find the user with this id.";
+          console.log(errMsg);
+          setEditError(errMsg);
         } else if (error.response.status === 400) {
-          alert("Error: Username already used, please choose a different one.");
+          errMsg =
+            "Error: Username already used, please choose a different one.";
+          console.log(errMsg);
+          setEditError(errMsg);
         } else {
-          alert("Unexpected error: " + err);
+          console.log(errMsg);
+          setEditError(errMsg);
         }
       }
     }
@@ -107,6 +115,7 @@ const UserPage = () => {
   const handleCancel = () => {
     setToggled(!toggled);
     setUserEdit(user);
+    setEditError("");
   };
 
   useEffect(() => {
@@ -157,12 +166,14 @@ const UserPage = () => {
   if (toggled) {
     editMode = (
       <>
+        {/*   CANCEL  */}
         <IconButton
           hoverIcon={MdCancel}
           icon={MdOutlineCancel}
           onClick={handleCancel}
           style={{ scale: "1.5", marginRight: "10px" }}
         />
+        {/*   SAVE   */}
         <IconButton
           hoverIcon={MdSave}
           icon={MdOutlineSave}
@@ -248,6 +259,9 @@ const UserPage = () => {
     <BaseContainer className="game container">
       <h2>User Details</h2>
       {content}
+      <div className="login" style={{ width: "20em" }}>
+        <RenderError err={editError !== ""} text={editError} />
+      </div>
       <div>{editMode}</div>
       {/*<Button width="100%" onClick={() => navigate("/game")}>*/}
       {/*  Back*/}
