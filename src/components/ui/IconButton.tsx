@@ -4,7 +4,12 @@ import "../../styles/ui/Button.scss";
 import "../../styles/ui/IconButton.scss";
 
 const IconButton = (props) => {
-  const { hoverIcon: HoverIcon, icon: Icon, ...rest } = props;
+  const {
+    hoverIcon: HoverIcon,
+    icon: Icon,
+    toggled: toggled = false,
+    ...rest
+  } = props;
   const [hover, setHover] = useState(false);
 
   return (
@@ -20,8 +25,8 @@ const IconButton = (props) => {
         ...props.style,
       }}
       className={`primary-button icon-button ${props.className}`}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      onMouseEnter={() => setHover(true || toggled)}
+      onMouseLeave={() => setHover(false || toggled)}
     >
       {hover && HoverIcon ? (
         <HoverIcon size={20} className={"icon-button-icon"} />
@@ -40,6 +45,7 @@ IconButton.propTypes = {
   children: PropTypes.node,
   icon: PropTypes.func,
   hoverIcon: PropTypes.func,
+  toggled: PropTypes.boolean,
 };
 
 export default IconButton;

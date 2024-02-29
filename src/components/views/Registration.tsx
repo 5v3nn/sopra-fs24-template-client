@@ -51,8 +51,10 @@ const Registration = () => {
         `Something went wrong during the login: \n${err}\nerror:${error.response}`
       );
       // console.log(error);
-      if (err.response.status === 403) {
-        setLoginError("Error: Username or password are wrong.");
+      if (error.response.status === 400) {
+        setLoginError(
+          "Error: Username is already occupied, please choose a different username."
+        );
       } else {
         setLoginError("Unexpected error: " + err);
       }

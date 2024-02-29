@@ -25,11 +25,13 @@ export const useAuth = () => {
           console.log("authenticated");
           setIsAuth(true);
           localStorage.setItem("token", res.data.token);
+          localStorage.setItem("myId", res.data.id);
         }
       } catch (e) {
         console.log(e);
         setIsAuth(false);
         localStorage.setItem("token", null);
+        localStorage.setItem("myId", null);
       }
     };
 
