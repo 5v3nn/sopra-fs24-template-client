@@ -32,7 +32,13 @@ pre-commit install
 To test if it works, run against files:
 
 ```bash
-pre-commit run --all-files
+$ pre-commit run --all-files
+Check Yaml...............................................................Passed
+Fix End of Files.........................................................Passed
+Trim Trailing Whitespace.................................................Passed
+Detect Private Key.......................................................Passed
+prettier.................................................................Passed
+mdformat.................................................................Passed
 ```
 
 Please note that the first run always takes a few minutes.
