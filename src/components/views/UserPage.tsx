@@ -142,7 +142,9 @@ const UserPage = () => {
         console.log("user", user);
       } catch (error) {
         console.error(
-          `Something went wrong while fetching the user: \n${handleError(error)}`
+          `Something went wrong while fetching the user: \n${handleError(
+            error
+          )}`
         );
         alert(
           "Something went wrong while fetching the user! See the console for details."
