@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Navigate, Outlet } from "react-router-dom";
 import PropTypes from "prop-types";
-import { api, handleError } from "helpers/api";
+import { api, updateUserStatus, handleError } from "helpers/api";
 import { useAuth } from "../../useAuth";
 
 /**
@@ -21,7 +21,12 @@ export const GameGuard = () => {
     return null;
   }
 
-  return isAuth ? <Outlet /> : <Navigate to="/login" replace />;
+  if (isAuth) {
+    updateUserStatus("ONLINE");
+
+    return <Outlet />;
+  }
+  return <Navigate to="/login" replace />;
 };
 
 GameGuard.propTypes = {
