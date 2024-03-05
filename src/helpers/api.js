@@ -10,6 +10,47 @@ export const api = axios.create({
   },
 });
 
+export const updateUserStatus = async (status) => {
+  const id = localStorage.getItem("myId");
+  try {
+    const response = await api.patch(
+      `/users/${id}/status`,
+      JSON.stringify({ status }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+  } catch (error) {
+    const err = handleError(error);
+    console.log(
+      `Something went wrong during the login: \n${err}\nerror:${error.response}`
+    );
+    let errMsg = "Unexpected error: " + err;
+    // console.log(error);
+    if (error.response.status === 403) {
+      errMsg = "Error: Not authorized to edit this user.";
+      console.log(errMsg);
+      alert(errMsg);
+    } else if (error.response.status === 404) {
+      errMsg = "Error: Could not find the user with this id.";
+      console.log(errMsg);
+      alert(errMsg);
+    } else if (error.response.status === 400) {
+      errMsg =
+        "Error: Username not allowed or already used, please choose a different one.";
+      console.log(errMsg);
+      alert(errMsg);
+    } else {
+      console.log(errMsg);
+      alert(errMsg);
+    }
+  }
+};
+
 export const handleError = (error) => {
   const response = error.response;
 
