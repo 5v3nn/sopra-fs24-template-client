@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
+import { api, updateUserStatus, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useNavigate } from "react-router-dom";
@@ -53,8 +53,14 @@ const Game = () => {
   const { showName, setShowName } = useContext(NameContext);
 
   const logout = (): void => {
+    // update the user status to offline
+    updateUserStatus("OFFLINE");
+
+    // cleanup
     localStorage.removeItem("token");
     setShowName("");
+
+    // back to login
     navigate("/login");
   };
 

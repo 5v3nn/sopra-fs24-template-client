@@ -249,6 +249,12 @@ const UserPage = () => {
         />
         <UserPageField
           editable={false}
+          name="Status: "
+          userProperty={user.status}
+          toggled={toggled}
+        />
+        <UserPageField
+          editable={false}
           name="Created: "
           userProperty={user.created}
           toggled={toggled}
